@@ -3,7 +3,6 @@ using SWP.Classes;
 using SWP.Classes.Game;
 using SWP.Classes.Infrastructure;
 using SWP.Classes.Repository;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows;
@@ -14,13 +13,11 @@ namespace SWP.ViewModels
     public class MainViewModel: ViewModelBase, IDropTarget
     {
         private Core core;
-        private Settings settings;
         private CollectionViewSource CvsStaff { get; set; }
 
         public MainViewModel()
         {
             core = new Core();
-            settings = new Settings();
             UnitsRepo.LoadUnitsData();
             SearchedUnitsList = new ObservableCollection<UnitItem>(UnitsRepo.GetAllUnits());
 
@@ -42,8 +39,6 @@ namespace SWP.ViewModels
         private int _teamIndex;
 
         #region propertyList
-
-        public Settings Settings => settings;
 
         public ObservableCollection<UnitItem> SearchedUnitsList { get; set; }
 
@@ -71,7 +66,7 @@ namespace SWP.ViewModels
                   {
                       GetCurrentCollection().Add(
                           core.GetNewTeam((ContentType)ContentTabIndex));
-                      UnitsRepo.SetNeedSave();
+                      Core.MarkTeamsAsChanged();
                   }));
             }
         }
@@ -87,7 +82,7 @@ namespace SWP.ViewModels
                       if(collection.Count > TeamIndex)
                       {
                           GetCurrentCollection().RemoveAt(TeamIndex);
-                          UnitsRepo.SetNeedSave();
+                          Core.MarkTeamsAsChanged();
                       }
                   }));
             }
@@ -208,10 +203,9 @@ namespace SWP.ViewModels
 
         public void DragOver(IDropInfo dropInfo)
         {
-            var sourceItem = dropInfo.Data as UnitItem;
-            var targetCollection = dropInfo.TargetCollection as ObservableCollection<Unit>;
+            var sourceCollection = dropInfo.DragInfo.SourceCollection as ObservableCollection<UnitItem>;
 
-            if (sourceItem != null && targetCollection != null)
+            if (sourceCollection != null)
             {
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
                 dropInfo.Effects = DragDropEffects.Scroll;
@@ -221,14 +215,13 @@ namespace SWP.ViewModels
         public void Drop(IDropInfo dropInfo)
         {
             var sourceItem = (UnitItem)dropInfo.Data;
-            var sourceCollection = dropInfo.DragInfo.SourceCollection as ObservableCollection<Unit>;
-            var targetCollection = dropInfo.TargetCollection as ObservableCollection<Unit>;
+            var sourceCollection = dropInfo.DragInfo.SourceCollection as ObservableCollection<UnitItem>;
 
-            if(targetCollection != sourceCollection)
+            if(sourceCollection != null && sourceItem != null)
             {
                 sourceItem.SetID(-1);
 
-                UnitsRepo.SetNeedSave();
+                Core.MarkTeamsAsChanged();
                 CollectionViewSource.GetDefaultView(sourceCollection).Refresh();
             }
         }

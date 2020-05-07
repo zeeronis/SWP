@@ -2,6 +2,7 @@
 using SWP.Classes.Repository;
 using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Data;
 
@@ -15,23 +16,26 @@ namespace SWP.Classes.Game
 
         public void DragOver(IDropInfo dropInfo)
         {
-            var sourceItem = (UnitItem)dropInfo.Data;
-            var targetItem = (UnitItem)dropInfo.TargetItem;
-            var sourceCollection = dropInfo.DragInfo.SourceCollection as ObservableCollection<UnitItem>;
-            var targetCollection = dropInfo.TargetCollection as ObservableCollection<UnitItem>;
+            bool isFilterCollection = false;
+            Type SourceCollectionType = dropInfo.DragInfo.SourceCollection.GetType();
 
-            if (sourceItem != null && targetCollection != null)
+            if (SourceCollectionType != typeof(ObservableCollection<UnitItem>)
+                || dropInfo.TargetCollection.GetType() != typeof(ObservableCollection<UnitItem>))
             {
-                dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-                if(sourceCollection == targetCollection)
+                if (SourceCollectionType == typeof(ListCollectionView))
                 {
-                    dropInfo.Effects = DragDropEffects.Move;
+                    isFilterCollection = true;
                 }
                 else
                 {
-                    dropInfo.Effects = DragDropEffects.Copy;
+                    return;
                 }
             }
+
+            dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
+            dropInfo.Effects = isFilterCollection
+                    ? DragDropEffects.Copy
+                    : DragDropEffects.Move;
         }
 
         public void Drop(IDropInfo dropInfo)
@@ -46,7 +50,7 @@ namespace SWP.Classes.Game
                 case DragDropEffects.Copy:
                     targetItem.SetID(sourceItem.ID);
 
-                    UnitsRepo.SetNeedSave();
+                    Core.MarkTeamsAsChanged();
                     CollectionViewSource.GetDefaultView(targetCollection).Refresh();
                     break;
 
@@ -55,8 +59,9 @@ namespace SWP.Classes.Game
                     sourceItem.SetID(targetItem.ID);
                     targetItem.SetID(id);
 
-                    UnitsRepo.SetNeedSave();
+                    Core.MarkTeamsAsChanged();
                     CollectionViewSource.GetDefaultView(targetCollection).Refresh();
+                    CollectionViewSource.GetDefaultView(sourceCollection).Refresh();
                     break;
 
                 default:

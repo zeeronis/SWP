@@ -1,14 +1,11 @@
 ﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
 using SWP.Classes.Game;
 using SWP.Classes.Repository;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace SWP.Classes
 {
@@ -20,7 +17,15 @@ namespace SWP.Classes
             LoadTeams();
         }
 
+
+        public static bool NeedSave { get; private set; }
         public List<ObservableCollection<Team>[]> teamsLists;
+
+
+        public static void MarkTeamsAsChanged()
+        {
+            NeedSave = true;
+        }
 
 
         private async void AutoSave()
@@ -29,10 +34,10 @@ namespace SWP.Classes
             {
                 try
                 {
-                    if (UnitsRepo.NeedSave)
+                    if (NeedSave)
                     {
                         SaveTeams();
-                        UnitsRepo.SetNeedSave(false);
+                        NeedSave = false;
                     }
                 }
                 catch (System.Exception e)
@@ -41,36 +46,6 @@ namespace SWP.Classes
                 }
 
                 await Task.Delay(1000);
-            }
-        }
-
-        private void InitEmptyList()
-        {
-            teamsLists = new List<ObservableCollection<Team>[]>()
-                {
-                    new ObservableCollection<Team>[2]
-                    {
-                        new ObservableCollection<Team>(),
-                        new ObservableCollection<Team>(),
-                    },
-                    new ObservableCollection<Team>[2]
-                    {
-                        new ObservableCollection<Team>(),
-                        new ObservableCollection<Team>(),
-                    },
-                    new ObservableCollection<Team>[2]
-                    {
-                        new ObservableCollection<Team>(),
-                        new ObservableCollection<Team>(),
-                    },
-                };
-        }
-
-        private void CheckDirectory()
-        {
-            if (!Directory.Exists(UnitsRepo.dataFolder))
-            {
-                Directory.CreateDirectory(UnitsRepo.dataFolder);
             }
         }
 
@@ -111,41 +86,35 @@ namespace SWP.Classes
 
         public void SaveTeams()
         {
-
-            CheckDirectory();
-
-            JsonSerializer serializer = new JsonSerializer();
-            serializer.NullValueHandling = NullValueHandling.Ignore;
-
-            using (StreamWriter sw = new StreamWriter(UnitsRepo.dataFolder + UnitsRepo.teamsFileName))
-            {
-                using (JsonWriter writer = new JsonTextWriter(sw))
-                {
-                    serializer.Serialize(writer, teamsLists);
-                }
-            }
+            FilesRepo.SaveObjToJson(
+                FilesRepo.saveFolder + FilesRepo.teamsFileName,
+                teamsLists);
         }
 
         public void LoadTeams()
         {
-            try
-            {
-                CheckDirectory();
-
-                string json = File.ReadAllText(UnitsRepo.dataFolder + UnitsRepo.teamsFileName);
-                if(json != string.Empty)
-                {
-                    teamsLists = JsonConvert.DeserializeObject<List<ObservableCollection<Team>[]>>(json);
-                }
-                else
-                {
-                    InitEmptyList();
-                }
-            }
-            catch (System.Exception e)
-            {
-                InitEmptyList();
-            }
+            teamsLists = FilesRepo.LoadJsonToObj(
+                FilesRepo.saveFolder + FilesRepo.teamsFileName,
+                () => {
+                    return new List<ObservableCollection<Team>[]>()
+                    {
+                        new ObservableCollection<Team>[2]
+                        {
+                            new ObservableCollection<Team>(),
+                            new ObservableCollection<Team>(),
+                        },
+                        new ObservableCollection<Team>[2]
+                        {
+                            new ObservableCollection<Team>(),
+                            new ObservableCollection<Team>(),
+                        },
+                        new ObservableCollection<Team>[2]
+                        {
+                            new ObservableCollection<Team>(),
+                            new ObservableCollection<Team>(),
+                        }
+                    };
+                });
         }
     }
 }

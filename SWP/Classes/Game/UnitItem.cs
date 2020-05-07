@@ -15,7 +15,7 @@ namespace SWP.Classes.Game
 
         public int ID { get; private set; }
         [JsonIgnore] public string Name => UnitsRepo.GetUnitName(ID);
-        [JsonIgnore] public BitmapImage Image => ImagesRepo.GetImage(ID);
+        [JsonIgnore] public BitmapImage Image => UnitsRepo.GetUnitImage(ID);
 
 
         public void SetID(int unitID)

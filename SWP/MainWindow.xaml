@@ -233,9 +233,10 @@
         <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" 
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
                  dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                 Background="#FF20252B" BorderBrush="{x:Null}"
                  dd:DragDrop.DropHandler="{Binding}"
                  ItemTemplate="{StaticResource UnitListItem}"
-                 ItemsSource="{Binding AllUnitsList}" Background="#FF20252B" BorderBrush="{x:Null}">
+                 ItemsSource="{Binding AllUnitsList}" >
             <ListBox.ItemsPanel>
                 <ItemsPanelTemplate>
                     <WrapPanel Orientation="Horizontal" />
@@ -244,8 +245,8 @@
         </ListBox>
 
         <TabControl HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  
-                    Grid.Column="1" Grid.RowSpan="2" Margin="5, 0, 0, 0"
-                    SelectedIndex="{Binding ContentTabIndex}" BorderThickness="0,10,0,0">
+                    Grid.Column="1" Grid.RowSpan="2" Margin="5, 0, 0, 0" BorderThickness="0,10,0,0"
+                    SelectedIndex="{Binding ContentTabIndex}">
             <TabItem>
                 <TabItem.Header>
                     <StackPanel Orientation="Horizontal">
@@ -254,7 +255,8 @@
                     </StackPanel>
                 </TabItem.Header>
                 <TabItem.Content>
-                    <TabControl SelectedIndex="{Binding ArenaTeamsTypeIndex}" Background="#FF20252B" BorderBrush="Black" BorderThickness="0,10,0,0">
+                    <TabControl Background="#FF20252B" BorderBrush="Black" BorderThickness="0,10,0,0"
+                                SelectedIndex="{Binding ArenaTeamsTypeIndex}">
                         <TabItem>
                             <TabItem.Header>
                                 <StackPanel Orientation="Horizontal">
@@ -263,9 +265,11 @@
                                 </StackPanel>
                             </TabItem.Header>
                             <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" 
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
-                                 ItemTemplate="{StaticResource TeamListItem}"
-                                 ItemsSource="{Binding ArenaOffence}" BorderBrush="{x:Null}" Background="{x:Null}">
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
+                                     dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                                     BorderBrush="{x:Null}" Background="{x:Null}"
+                                     ItemTemplate="{StaticResource TeamListItem}"
+                                     ItemsSource="{Binding ArenaOffence}" >
                                 <ListBox.ItemsPanel >
                                     <ItemsPanelTemplate>
                                         <WrapPanel Orientation="Horizontal"/>
@@ -281,9 +285,11 @@
                                 </StackPanel>
                             </TabItem.Header>
                             <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" 
-                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
-                                 ItemTemplate="{StaticResource TeamListItem}"
-                                 ItemsSource="{Binding ArenaDefence}" BorderBrush="{x:Null}" Background="{x:Null}">
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
+                                     dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                                     BorderBrush="{x:Null}" Background="{x:Null}"
+                                     ItemTemplate="{StaticResource TeamListItem}"
+                                     ItemsSource="{Binding ArenaDefence}" >
                                 <ListBox.ItemsPanel >
                                     <ItemsPanelTemplate>
                                         <WrapPanel Orientation="Horizontal"/>
@@ -312,9 +318,11 @@
                                 </StackPanel>
                             </TabItem.Header>
                             <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" 
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
-                                 ItemTemplate="{StaticResource TeamListItem}"
-                                 ItemsSource="{Binding GWO}" BorderBrush="{x:Null}" Background="{x:Null}">
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
+                                     dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                                     BorderBrush="{x:Null}" Background="{x:Null}"
+                                     ItemTemplate="{StaticResource TeamListItem}"
+                                     ItemsSource="{Binding GWO}" >
                                 <ListBox.ItemsPanel >
                                     <ItemsPanelTemplate>
                                         <WrapPanel Orientation="Horizontal"/>
@@ -330,9 +338,11 @@
                                 </StackPanel>
                             </TabItem.Header>
                             <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" 
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
-                                 ItemTemplate="{StaticResource TeamListItem}"
-                                 ItemsSource="{Binding GWD}" BorderBrush="{x:Null}" Background="{x:Null}">
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
+                                     dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                                     BorderBrush="{x:Null}" Background="{x:Null}"
+                                     ItemTemplate="{StaticResource TeamListItem}"
+                                     ItemsSource="{Binding GWD}" >
                                 <ListBox.ItemsPanel >
                                     <ItemsPanelTemplate>
                                         <WrapPanel Orientation="Horizontal"/>
@@ -361,9 +371,11 @@
                                 </StackPanel>
                             </TabItem.Header>
                             <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" 
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
-                                 ItemTemplate="{StaticResource TeamListItem}"
-                                 ItemsSource="{Binding SiegeOffence}" BorderBrush="{x:Null}" Background="{x:Null}">
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
+                                     dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                                     BorderBrush="{x:Null}" Background="{x:Null}"
+                                     ItemTemplate="{StaticResource TeamListItem}"
+                                     ItemsSource="{Binding SiegeOffence}" >
                                 <ListBox.ItemsPanel >
                                     <ItemsPanelTemplate>
                                         <WrapPanel Orientation="Horizontal"/>
@@ -379,9 +391,11 @@
                                 </StackPanel>
                             </TabItem.Header>
                             <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" 
-                            ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
-                                 ItemTemplate="{StaticResource TeamListItem}"
-                                 ItemsSource="{Binding SiegeDefence}" BorderBrush="{x:Null}" Background="{x:Null}">
+                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
+                                     dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                                     BorderBrush="{x:Null}" Background="{x:Null}"
+                                     ItemTemplate="{StaticResource TeamListItem}"
+                                     ItemsSource="{Binding SiegeDefence}" >
                                 <ListBox.ItemsPanel >
                                     <ItemsPanelTemplate>
                                         <WrapPanel Orientation="Horizontal"/>
@@ -396,10 +410,12 @@
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal"
                     Grid.Column="1" Grid.Row="1" Margin="15">
+            
             <Button Width="40" Height="40" 
                     Background="Transparent"
+                    BorderBrush="{x:Null}"
                     Content="{StaticResource AddTeamImage}"
-                    Command="{Binding AddTeamCommand}" BorderBrush="{x:Null}"/>
+                    Command="{Binding AddTeamCommand}"/>
             <!--<Button Width="40" Height="40" 
                     Content="{StaticResource RemoveTeamImage}"
                     Command="{Binding RemoveTeamCommand}"/>-->

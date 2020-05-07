@@ -65,9 +65,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\Game\UnitItem.cs" />
-    <Compile Include="Classes\Repository\ImagesRepo.cs" />
+    <Compile Include="Classes\Repository\FilesRepo.cs" />
     <Compile Include="Classes\Repository\UnitsRepo.cs" />
-    <Compile Include="Classes\Settings.cs" />
     <Compile Include="ViewModels\MainViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

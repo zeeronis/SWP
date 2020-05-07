@@ -1,33 +1,29 @@
 ﻿using Newtonsoft.Json;
 using SWP.Classes.Game;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Windows.Media.Imaging;
 
 namespace SWP.Classes.Repository
 {
     public static class UnitsRepo
     {
-        public const string teamsFileName = "Teams.json";
-        public const string unitsDataFileName = "UnitsNames.json";
-        public readonly static string dataFolder = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location)
-            + @"\Data\";
+        private readonly static BitmapImage defaultSlot = new BitmapImage(new Uri(@"pack://application:,,,/Resources/sw_slot1.png"));
 
         private static Unit[] units;
-        public static bool NeedSave { get; private set; }
+        private static BitmapImage[] unitImages;
 
-
-        public static void SetNeedSave(bool isNeedSave = true)
-        {
-            NeedSave = isNeedSave;
-        }
 
         public static void LoadUnitsData()
         {
-            string json = File.ReadAllText(dataFolder + unitsDataFileName);
-            var namesList = JsonConvert.DeserializeObject<List<string>>(json);
+            var namesList = FilesRepo.LoadJsonToObj(
+                FilesRepo.dataFolder + FilesRepo.unitsDataFileName,
+                () => { return new List<string>(); });
 
             units = new Unit[namesList.Count];
+            unitImages = new BitmapImage[namesList.Count];
             for (int i = 0; i < namesList.Count; i++)
             {
                 units[i] = new Unit(i, namesList[i]);
@@ -42,6 +38,30 @@ namespace SWP.Classes.Repository
             }
 
             return string.Empty;
+        }
+
+        public static BitmapImage GetUnitImage(int unitID)
+        {
+            if (unitID == -1)
+            {
+                return defaultSlot;
+            }
+
+            if (unitImages[unitID] == null)
+            {
+                var image = new BitmapImage(new Uri(
+                    Directory.GetCurrentDirectory()
+                    + string.Format(@"\Images\{0}.png", unitID)));
+
+                if (image == null)
+                {
+                    return defaultSlot;
+                }
+
+                unitImages[unitID] = image;
+            }
+
+            return unitImages[unitID];
         }
 
         public static List<UnitItem> GetAllUnits()
