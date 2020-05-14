@@ -12,6 +12,7 @@ namespace SWP.Classes.Game
     public class Team: IDropTarget
     {
         public ContentType ContentType { get; set; }
+        public string Title { get; set; }
         public ObservableCollection<UnitItem> UnitsList { get; set; } = new ObservableCollection<UnitItem>();
 
         public void DragOver(IDropInfo dropInfo)

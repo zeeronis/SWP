@@ -14,7 +14,7 @@ namespace SWP.Classes.Repository
         public const string teamsFileName = "Teams.json";
         public const string unitsDataFileName = "UnitsNames.json";
         public readonly static string dataFolder = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\Data\";
-        public readonly static string saveFolder = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + @"\Data\";
+        public readonly static string saveFolder = @"C:\ProgramData\SWP\";
 
         private readonly static JsonSerializer serializer = new JsonSerializer()
         {
@@ -26,7 +26,7 @@ namespace SWP.Classes.Repository
         {
             if (!Directory.Exists(Directory.GetParent(path).FullName))
             {
-                Directory.CreateDirectory(Directory.GetDirectoryRoot(path));
+                Directory.CreateDirectory(Directory.GetParent(path).FullName);
             }
         }
 

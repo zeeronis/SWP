@@ -64,6 +64,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\Converters\TeamTitleConverter.cs" />
     <Compile Include="Classes\Game\UnitItem.cs" />
     <Compile Include="Classes\Repository\FilesRepo.cs" />
     <Compile Include="Classes\Repository\UnitsRepo.cs" />

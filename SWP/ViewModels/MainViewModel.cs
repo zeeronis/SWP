@@ -18,7 +18,7 @@ namespace SWP.ViewModels
         public MainViewModel()
         {
             core = new Core();
-            UnitsRepo.LoadUnitsData();
+            UnitsRepo.LoadImagesData();
             SearchedUnitsList = new ObservableCollection<UnitItem>(UnitsRepo.GetAllUnits());
 
             CvsStaff = new CollectionViewSource();
@@ -78,12 +78,7 @@ namespace SWP.ViewModels
                 return _removeTeamCommand ??
                   (_removeTeamCommand = new DelegateCommand(obj =>
                   {
-                      var collection = GetCurrentCollection();
-                      if(collection.Count > TeamIndex)
-                      {
-                          GetCurrentCollection().RemoveAt(TeamIndex);
-                          Core.MarkTeamsAsChanged();
-                      }
+                      RemoveTeam(obj as Team);
                   }));
             }
         }
@@ -199,30 +194,65 @@ namespace SWP.ViewModels
             }
 
             return core.teamsLists[ContentTabIndex][teamsTypeIndex];
-        }   
+        }  
+        
+        private void RemoveTeam(Team team)
+        {
+            var result = MessageBox.Show("Do you really want delete this team?", "Allert",
+                    MessageBoxButton.YesNo, MessageBoxImage.Question, MessageBoxResult.No);
+
+            if (result != MessageBoxResult.Yes)
+                return;
+
+
+            var collection = GetCurrentCollection();
+            if (collection.Count > TeamIndex)
+            {
+                GetCurrentCollection().RemoveAt(TeamIndex);
+                Core.MarkTeamsAsChanged();
+            }
+        }
 
         public void DragOver(IDropInfo dropInfo)
         {
-            var sourceCollection = dropInfo.DragInfo.SourceCollection as ObservableCollection<UnitItem>;
-
-            if (sourceCollection != null)
+            if (dropInfo.DragInfo.SourceCollection as ObservableCollection<UnitItem> != null)
             {
                 dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
                 dropInfo.Effects = DragDropEffects.Scroll;
             }
+            else if(dropInfo.DragInfo.SourceCollection as ObservableCollection<Team> != null)
+            {
+                dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
+                dropInfo.Effects = DragDropEffects.Move;
+            }
+
+            var ss = dropInfo.DragInfo.SourceCollection.GetType();
         }
 
         public void Drop(IDropInfo dropInfo)
         {
-            var sourceItem = (UnitItem)dropInfo.Data;
-            var sourceCollection = dropInfo.DragInfo.SourceCollection as ObservableCollection<UnitItem>;
-
-            if(sourceCollection != null && sourceItem != null)
+            if(dropInfo.Effects == DragDropEffects.Scroll)
             {
-                sourceItem.SetID(-1);
+                var sourceItem = dropInfo.Data as UnitItem;
+                var sourceCollection = dropInfo.DragInfo.SourceCollection as ObservableCollection<UnitItem>;
 
-                Core.MarkTeamsAsChanged();
-                CollectionViewSource.GetDefaultView(sourceCollection).Refresh();
+                if (sourceItem != null && sourceCollection != null)
+                {
+                    sourceItem.SetID(-1);
+
+                    Core.MarkTeamsAsChanged();
+                    CollectionViewSource.GetDefaultView(sourceCollection).Refresh();
+                }
+            }
+            else if (dropInfo.Effects == DragDropEffects.Move)
+            {
+                var sourceItem = dropInfo.Data as Team;
+                var sourceCollection = dropInfo.DragInfo.SourceCollection as ObservableCollection<Team>;
+
+                if (sourceItem != null && sourceCollection != null)
+                {
+                    RemoveTeam(sourceItem);
+                }
             }
         }
     }

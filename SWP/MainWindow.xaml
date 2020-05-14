@@ -5,18 +5,22 @@
         xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vm="clr-namespace:SWP.ViewModels"
+        xmlns:c="clr-namespace:SWP.Classes.Converters"
         xmlns:local="clr-namespace:SWP"
         mc:Ignorable="d"
-        Title="SWP" Height="450" Width="800" Background="{x:Null}" Foreground="{x:Null}" WindowStyle="SingleBorderWindow" ForceCursor="False">
+        Title="SWP" Height="450" Width="800" MinHeight="450" MinWidth="655"
+        Background="{x:Null}" Foreground="{x:Null}" WindowStyle="SingleBorderWindow" ForceCursor="False">
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
 
     <Window.Resources>
+        <c:TeamTitleConverter x:Key="TeamTitleConverter"/>
 
         <BitmapImage x:Key="SlotImage1" UriSource="pack://application:,,,/Resources/sw_slot.png"/>
         <BitmapImage x:Key="SlotImage" UriSource="pack://application:,,,/Resources/sw_slot1.png"/>
 
+        
         <Image x:Key="AddTeamImage">
             <Image.Source>
                 <BitmapImage UriSource="pack://application:,,,/Resources/AddSlot.png"/>
@@ -29,11 +33,6 @@
             </Image.Source>
         </Image>
 
-
-        <Style TargetType="ListBox">
-            <Setter Property="Control.Background" Value="#FF13181E"/>
-        </Style>
-
         <Style TargetType="TabControl">
             <Setter Property="Control.Background" Value="#FF20252B"/>
             <Setter Property="Control.BorderThickness" Value="1"/>
@@ -42,11 +41,7 @@
 
         <DataTemplate x:Key="UnitListItem">
             <Border Width="55" Height="55" Margin="0,5" BorderBrush="Black" BorderThickness="1">
-                <Grid>
-                    <Image Source="{Binding Image}"/>
-                    <!--<Label HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="Black"
-                       Content="{Binding ID}"/>-->
-                </Grid>
+                <Image Source="{Binding Image}"/>
             </Border>
         </DataTemplate>
 
@@ -61,21 +56,132 @@
         </DataTemplate>
 
         <DataTemplate x:Key="TeamListItem">
-            <Border HorizontalAlignment="Center" Margin="0,4" BorderBrush="{x:Null}">
-                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
-                    dd:DragDrop.DropHandler="{Binding}"
-                    ItemTemplate="{StaticResource SlotUnitListItem}"
-                    ItemsSource="{Binding UnitsList}" BorderBrush="Black" BorderThickness="3">
+            <StackPanel HorizontalAlignment="Center" Margin="0,4">
+                <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                         BorderBrush="Black" Foreground="DarkOrange" TextAlignment="Center"
+                         BorderThickness="2" FontSize="14"  Margin="5,0,5,-1.5"
+                         Text="{Binding Title, Converter={StaticResource TeamTitleConverter}}">
+                </TextBox>
+                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                         dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                         BorderBrush="Black" BorderThickness="3" Margin="0,0,0,0"
+                         dd:DragDrop.DropHandler="{Binding}"
+                         ItemTemplate="{StaticResource SlotUnitListItem}"
+                         ItemsSource="{Binding UnitsList}" >
                     <ListBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <WrapPanel Orientation="Horizontal"/>
                         </ItemsPanelTemplate>
                     </ListBox.ItemsPanel>
                 </ListBox>
-            </Border>
+            </StackPanel>
         </DataTemplate>
 
+        <Style TargetType="{x:Type ListBox}">
+            <Setter Property="Background" Value="#FF13181E"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="VerticalAlignment" Value="Stretch"/>
+            <Setter Property="BorderBrush" Value="{x:Null}"/>
+            <Setter Property="Background" Value="{x:Null}"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Grid.Row" Value="1"/>
+            <Setter Property="dd:DragDrop.IsDragSource" Value="True"/>
+            <Setter Property="dd:DragDrop.IsDropTarget" Value="True"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+            <Setter Property="SelectedIndex" Value="{Binding TeamIndex, Mode=OneWayToSource}"/>
+            <Setter Property="ItemTemplate" Value="{StaticResource TeamListItem}"/>
+            <Setter Property="ItemsSource" Value="{Binding ArenaOffence}"/>
+            <Setter Property="ItemsPanel">
+                <Setter.Value>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style>
+                       
+                    </Style>
+                </Setter.Value>
+            </Setter>
+            
+        </Style>
+
+        <Style TargetType="{x:Type TextBox}" x:Key="SearchTextBox">
+            <Setter Property="CaretBrush" Value="#FF959AA0"/>
+            <Setter Property="SelectionBrush" Value="#FFFFAD49"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="border"
+                                Background="#FF0B0F14" BorderThickness="2">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Focusable="False"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden">
+                            </ScrollViewer>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter TargetName="border" Property="BorderBrush" Value="DarkOrange"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="0.85"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="false">
+                                <Setter TargetName="border" Property="BorderBrush" Value="Black"/>
+                                <Setter TargetName="border" Property="BorderThickness" Value="2"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style TargetType="{x:Type TextBox}">
+            <Setter Property="CaretBrush" Value="#FF959AA0"/>
+            <Setter Property="SelectionBrush" Value="#FFFFAD49"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type TextBox}">
+                        <Border x:Name="border"
+                                BorderBrush="Black" Background="#FF0B0F14"
+                                BorderThickness="2">
+                            <ScrollViewer x:Name="PART_ContentHost"
+                                          Focusable="False"
+                                          HorizontalScrollBarVisibility="Hidden"
+                                          VerticalScrollBarVisibility="Hidden">
+                            </ScrollViewer>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--<Style TargetType="{x:Type ListBoxItem}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                        <Border BorderThickness="2" BorderBrush="AliceBlue">
+                            <ItemsPresenter Height="50" Width="50"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="false">
+                                
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>-->
+        
         <Style TargetType="{x:Type TabItem}">
             <Setter Property="Template">
                 <Setter.Value>
@@ -167,6 +273,8 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        
+        
 
         <ControlTemplate x:Key="VerticalScrollBar" TargetType="{x:Type ScrollBar}">
             <Grid>
@@ -208,7 +316,7 @@
 
     </Window.Resources>
 
-    
+
 
     <Grid Background="#FF20252B">
         <Grid.RowDefinitions>
@@ -224,11 +332,10 @@
                       VerticalAlignment="Stretch" Background="Black" Width="4" Grid.RowSpan="2" />
 
         <TextBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                 Margin="5,7,5,0" FontSize="15" Background="#FF0B0F14"
-                 BorderBrush="#FF0B0F14" SelectionBrush="#FFFFAD49" Foreground="White" CaretBrush="#FFFFAD49"
+                 Margin="5,7,5,0" FontSize="15" Foreground="#FF959AA0"
+                 Style="{StaticResource SearchTextBox}"
                  Text="{Binding Filter, UpdateSourceTrigger=PropertyChanged}">
         </TextBox>
-
 
         <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" 
                  ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
@@ -264,18 +371,7 @@
                                     <TextBlock Margin="3">Offence</TextBlock>
                                 </StackPanel>
                             </TabItem.Header>
-                            <ListBox HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="5" 
-                                     ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
-                                     dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
-                                     BorderBrush="{x:Null}" Background="{x:Null}"
-                                     ItemTemplate="{StaticResource TeamListItem}"
-                                     ItemsSource="{Binding ArenaOffence}" >
-                                <ListBox.ItemsPanel >
-                                    <ItemsPanelTemplate>
-                                        <WrapPanel Orientation="Horizontal"/>
-                                    </ItemsPanelTemplate>
-                                </ListBox.ItemsPanel>
-                            </ListBox>
+                            <ListBox/>
                         </TabItem>
                         <TabItem>
                             <TabItem.Header>
@@ -288,6 +384,7 @@
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
                                      dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
                                      BorderBrush="{x:Null}" Background="{x:Null}"
+                                     SelectedIndex="{Binding TeamIndex, Mode=OneWayToSource}"
                                      ItemTemplate="{StaticResource TeamListItem}"
                                      ItemsSource="{Binding ArenaDefence}" >
                                 <ListBox.ItemsPanel >
@@ -321,6 +418,7 @@
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
                                      dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
                                      BorderBrush="{x:Null}" Background="{x:Null}"
+                                     SelectedIndex="{Binding TeamIndex, Mode=OneWayToSource}"
                                      ItemTemplate="{StaticResource TeamListItem}"
                                      ItemsSource="{Binding GWO}" >
                                 <ListBox.ItemsPanel >
@@ -341,6 +439,7 @@
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
                                      dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
                                      BorderBrush="{x:Null}" Background="{x:Null}"
+                                     SelectedIndex="{Binding TeamIndex, Mode=OneWayToSource}"
                                      ItemTemplate="{StaticResource TeamListItem}"
                                      ItemsSource="{Binding GWD}" >
                                 <ListBox.ItemsPanel >
@@ -374,6 +473,7 @@
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
                                      dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
                                      BorderBrush="{x:Null}" Background="{x:Null}"
+                                     SelectedIndex="{Binding TeamIndex, Mode=OneWayToSource}"
                                      ItemTemplate="{StaticResource TeamListItem}"
                                      ItemsSource="{Binding SiegeOffence}" >
                                 <ListBox.ItemsPanel >
@@ -394,6 +494,7 @@
                                      ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="1"
                                      dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
                                      BorderBrush="{x:Null}" Background="{x:Null}"
+                                     SelectedIndex="{Binding TeamIndex, Mode=OneWayToSource}"
                                      ItemTemplate="{StaticResource TeamListItem}"
                                      ItemsSource="{Binding SiegeDefence}" >
                                 <ListBox.ItemsPanel >
@@ -410,7 +511,7 @@
 
         <StackPanel HorizontalAlignment="Center" VerticalAlignment="Bottom" Orientation="Horizontal"
                     Grid.Column="1" Grid.Row="1" Margin="15">
-            
+
             <Button Width="40" Height="40" 
                     Background="Transparent"
                     BorderBrush="{x:Null}"

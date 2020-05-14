@@ -10,14 +10,24 @@ namespace SWP.Classes.Repository
 {
     public static class UnitsRepo
     {
-        private readonly static BitmapImage defaultSlot = new BitmapImage(new Uri(@"pack://application:,,,/Resources/sw_slot1.png"));
+        private static BitmapImage defaultSlot;
 
         private static Unit[] units;
         private static BitmapImage[] unitImages;
 
 
-        public static void LoadUnitsData()
+        public static void LoadImagesData()
         {
+            try
+            {
+                defaultSlot = new BitmapImage(new Uri(@"pack://application:,,,/Resources/sw_slot1.png"));
+            }
+            catch (Exception)
+            {
+                defaultSlot = new BitmapImage();
+            }
+
+
             var namesList = FilesRepo.LoadJsonToObj(
                 FilesRepo.dataFolder + FilesRepo.unitsDataFileName,
                 () => { return new List<string>(); });
